@@ -28,9 +28,12 @@ additionnaly it's possible that current limitation may affect the integration of
 - terraform plan
 - terraform apply (-auto-approve)
 
-## initialization
 ### on controller node
-curl -fsL https://get.k3s.io | sh -s - --disable traefik --node-name <controller-node>
+
+    curl -fsL https://get.k3s.io | sh -s - --disable traefik --node-name <controller-node>
+
+  
 
 ### on worker nodes
-curl -fsL https://get.k3s.io | K3S_URL=https://<controller-node>:6443 K3S_TOKEN=<node_token> sh -s - --node-name <worker-node>
+
+    curl -fsL https://get.k3s.io | K3S_URL=https://<controller-node>:6443 K3S_TOKEN=<node_token> sh -s - --node-name <worker-node>
