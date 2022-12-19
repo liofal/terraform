@@ -1,0 +1,9 @@
+[Unit]
+Description=Make sure /dev/kmsg exists
+[Service]
+Type=simple
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/conf-kmsg.sh
+TimeoutStartSec=0
+[Install]
+WantedBy=default.target

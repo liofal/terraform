@@ -1,0 +1,13 @@
+arch: amd64
+cores: 4
+hostname: k3s-template
+memory: 4096
+nameserver: <nameserver>
+net0: name=eth0,bridge=vmbr0,firewall=1,gw=<gateway>,hwaddr=AA:AA:AA:AA:AA:AA,ip=gw=<ip>/24,ip6=auto,type=veth
+ostype: centos
+rootfs: local-lvm:base-100-disk-0,size=8G
+searchdomain: <domain-name>
+swap: 512
+template: 1
+unprivileged: 1
+lxc.apparmor.profile: unconfined
