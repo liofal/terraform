@@ -22,7 +22,8 @@ resource "proxmox_lxc" "k3s-controller1" {
   password     = "123456"
   target_node  = "proxmox"
   
-  unprivileged = true
+  unprivileged = false
+  onboot        = true
   pool         = "k3s"
   clone        = "100"
   
@@ -47,12 +48,13 @@ resource "proxmox_lxc" "k3s-controller1" {
 resource "proxmox_lxc" "k3s-worker1" {
   hostname     = "k3sw1"
   cores        = 4
-  memory       = "4096"
+  memory       = "8192"
   swap         = "512"
   password     = "123456"
   target_node  = "proxmox"
 
-  unprivileged = true
+  unprivileged = false
+  onboot        = true
   pool         = "k3s"
   clone        = "100"
 
@@ -77,12 +79,13 @@ resource "proxmox_lxc" "k3s-worker1" {
 resource "proxmox_lxc" "k3s-worker2" {
   hostname     = "k3sw2"
   cores        = 4
-  memory       = "4096"
+  memory       = "8192"
   swap         = "512"
   password     = "123456"
   target_node  = "proxmox"
 
-  unprivileged = true
+  unprivileged = false
+  onboot        = true
   pool         = "k3s"
   clone        = "100"
 
@@ -107,12 +110,13 @@ resource "proxmox_lxc" "k3s-worker2" {
 resource "proxmox_lxc" "k3s-worker3" {
   hostname     = "k3sw3"
   cores        = 4
-  memory       = "4096"
+  memory       = "8192"
   swap         = "512"
   password     = "123456"
   target_node  = "proxmox"
 
-  unprivileged = true
+  unprivileged = false
+  onboot        = true
   pool         = "k3s"
   clone        = "100"
 
