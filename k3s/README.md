@@ -21,6 +21,13 @@ additionnaly it's possible that current limitation may affect the integration of
 - isolate into proper vlan
 - management of remote tfstate file
 
+## preparation
+- prepare proxmox api token
+    - create a terraform user with the proxmox ve Authorization service
+    - make sure the user has the proper permissions
+        - For more information, refer to [this online guide](https://registry.terraform.io/providers/Telmate/proxmox/latest/docs).
+    - create an api token linked to the user, make sure to preserver the permissions, or propagate them manually
+
 ## installation
 - adapt .env.example into .env file adapted to your needs
 - source .env
