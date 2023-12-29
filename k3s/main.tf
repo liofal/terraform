@@ -1,5 +1,9 @@
 terraform {
-  required_version = ">= 0.14"
+  backend "s3" {
+    bucket         = "lfa-speos-test"
+    key            = "terraform/state"
+    encrypt        = true
+  }
   required_providers {
     proxmox = {
       source  = "telmate/proxmox"
