@@ -13,7 +13,7 @@ terraform {
 }
 
 provider "proxmox" {
-  pm_tls_insecure = true
+  pm_tls_insecure = false
   pm_api_url      = var.pm_api_url
   pm_parallel     = 1
 }
