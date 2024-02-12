@@ -45,7 +45,7 @@ resource "proxmox_lxc" "k3s-controller1" {
   }
   rootfs {
     storage = "local-lvm"
-    size = "8G"
+    size = "16G"
   }
 }
 
@@ -76,7 +76,7 @@ resource "proxmox_lxc" "k3s-worker1" {
   }
   rootfs {
     storage = "local-lvm"
-    size = "8G"
+    size = "16G"
   }
 }
 
@@ -107,7 +107,7 @@ resource "proxmox_lxc" "k3s-worker2" {
   }
   rootfs {
     storage = "local-lvm"
-    size = "8G"
+    size = "16G"
   }
 }
 
@@ -138,6 +138,6 @@ resource "proxmox_lxc" "k3s-worker3" {
   }
   rootfs {
     storage = "local-lvm"
-    size = "8G"
+    size = "16G"
   }
 }
