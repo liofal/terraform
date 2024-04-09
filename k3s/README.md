@@ -39,6 +39,10 @@ additionnaly it's possible that current limitation may affect the integration of
 
     curl -fsL https://get.k3s.io | sh -s - --disable traefik --node-name <controller-node>
 
+    cat /var/lib/rancher/k3s/server/node-token
+
+    cat /etc/rancher/k3s/k3s.yaml
+
   
 
 ### on worker nodes
