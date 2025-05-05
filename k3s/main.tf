@@ -1,9 +1,9 @@
 terraform {
-  backend "s3" {
-    bucket         = "lfa-speos-test"
-    key            = "terraform/state"
-    encrypt        = true
-  }
+  # backend "s3" {
+  #   bucket         = "lfa-speos-test"
+  #   key            = "terraform/state"
+  #   encrypt        = true
+  # }
   required_providers {
     proxmox = {
       source = "Telmate/proxmox"
@@ -13,7 +13,7 @@ terraform {
 }
 
 provider "proxmox" {
-  pm_tls_insecure = false
+  pm_tls_insecure = true
   pm_api_url      = var.pm_api_url
   pm_parallel     = 1
 }
@@ -21,7 +21,7 @@ provider "proxmox" {
 resource "proxmox_lxc" "k3s-controller1" {
   hostname     = "k3sc1"
   cores        = 4
-  memory       = "2048"
+  memory       = "4096"
   swap         = "512"
   password     = "123456"
   target_node  = "proxmox"
@@ -29,7 +29,7 @@ resource "proxmox_lxc" "k3s-controller1" {
   unprivileged = false
   onboot        = true
   pool         = "k3s"
-  clone        = "100"
+  clone        = "101"
   
   searchdomain = var.searchdomain
   nameserver   = var.nameserver
@@ -40,6 +40,38 @@ resource "proxmox_lxc" "k3s-controller1" {
     firewall = true
     ip     = "192.168.1.201/24"
     hwaddr  = "7A:00:00:00:04:01"
+    gw     = var.gw
+    ip6    = "auto"
+    # tag    =1
+  }
+  rootfs {
+    storage = "local-lvm"
+    size = "16G"
+  }
+}
+
+resource "proxmox_lxc" "k3s-worker5" {
+  hostname     = "k3sw5"
+  cores        = 4
+  memory       = "8192"
+  swap         = "512"
+  password     = "123456" # Note: Consider managing secrets more securely
+  target_node  = "proxmox"
+
+  unprivileged = false
+  onboot        = true
+  pool         = "k3s"
+  clone        = "101" # Assuming template ID 101 is correct
+
+  searchdomain = var.searchdomain
+  nameserver   = var.nameserver
+  network {
+    name   = "eth0"
+    bridge = "vmbr0"
+    type   = "veth"
+    firewall = true
+    ip     = "192.168.1.206/24"
+    hwaddr  = "7A:00:00:00:04:06"
     gw     = var.gw
     ip6    = "auto"
     # tag    =1
@@ -61,7 +93,7 @@ resource "proxmox_lxc" "k3s-worker1" {
   unprivileged = false
   onboot        = true
   pool         = "k3s"
-  clone        = "100"
+  clone        = "101"
 
   searchdomain = var.searchdomain
   nameserver   = var.nameserver
@@ -93,7 +125,7 @@ resource "proxmox_lxc" "k3s-worker2" {
   unprivileged = false
   onboot        = true
   pool         = "k3s"
-  clone        = "100"
+  clone        = "101"
 
   searchdomain = var.searchdomain
   nameserver   = var.nameserver
@@ -125,7 +157,7 @@ resource "proxmox_lxc" "k3s-worker3" {
   unprivileged = false
   onboot        = true
   pool         = "k3s"
-  clone        = "100"
+  clone        = "101"
 
   searchdomain = var.searchdomain
   nameserver   = var.nameserver
