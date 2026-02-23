@@ -28,6 +28,51 @@ additionnaly it's possible that current limitation may affect the integration of
         - For more information, refer to [this online guide](https://registry.terraform.io/providers/Telmate/proxmox/latest/docs).
     - create an api token linked to the user, make sure to preserver the permissions, or propagate them manually
 
+### Proxmox ACL baseline for Terraform (minimal and strict)
+
+Use a dedicated role bound to your group on `/`.
+
+Proxmox 9+:
+
+```bash
+pveum role add TerraformProvisioner -privs "Datastore.AllocateSpace Datastore.AllocateTemplate Datastore.Audit Pool.Allocate Pool.Audit Sys.Audit Sys.Console Sys.Modify VM.Allocate VM.Audit VM.Clone VM.Config.CDROM VM.Config.Cloudinit VM.Config.CPU VM.Config.Disk VM.Config.HWType VM.Config.Memory VM.Config.Network VM.Config.Options VM.Migrate VM.PowerMgmt SDN.Use"
+```
+
+Proxmox 8 and older (same as above, plus `VM.Monitor`):
+
+```bash
+pveum role add TerraformProvisioner -privs "Datastore.AllocateSpace Datastore.AllocateTemplate Datastore.Audit Pool.Allocate Pool.Audit Sys.Audit Sys.Console Sys.Modify VM.Allocate VM.Audit VM.Clone VM.Config.CDROM VM.Config.Cloudinit VM.Config.CPU VM.Config.Disk VM.Config.HWType VM.Config.Memory VM.Config.Network VM.Config.Options VM.Monitor VM.Migrate VM.PowerMgmt SDN.Use"
+```
+
+If the role already exists, replace `role add` with `role modify`.
+
+Create/assign group and ACL:
+
+```bash
+pveum group add terraformprovisioner
+pveum user modify terraform@pve -group terraformprovisioner
+pveum aclmod / -group terraformprovisioner -role TerraformProvisioner
+```
+
+Create token inheriting user/group ACLs (important):
+
+```bash
+pveum user token add terraform@pve terraform --privsep 0
+```
+
+If token already exists:
+
+```bash
+pveum user token modify terraform@pve terraform --privsep 0
+```
+
+Quick checks:
+
+```bash
+pveum user token list terraform@pve
+pveum user permissions terraform@pve
+```
+
 ## installation
 - adapt .env.example into .env file adapted to your needs
 - source .env
