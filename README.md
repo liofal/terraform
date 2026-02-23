@@ -1,7 +1,7 @@
 # terraform
 
 ## introduction
-this repository provides proxmox automation relying in following provider
+this repository provides proxmox automation relying on the following provider
 
 https://registry.terraform.io/providers/Telmate/proxmox/latest/docs
 

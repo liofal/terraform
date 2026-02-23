@@ -23,7 +23,7 @@ additionnaly it's possible that current limitation may affect the integration of
 
 ## preparation
 - prepare proxmox api token
-    - create a terraform user with the proxmox ve Authorization service
+    - create a terraform service user with the proxmox ve Authorization service
     - make sure the user has the proper permissions
         - For more information, refer to [this online guide](https://registry.terraform.io/providers/Telmate/proxmox/latest/docs).
     - create an api token linked to the user, make sure to preserver the permissions, or propagate them manually
@@ -48,3 +48,25 @@ additionnaly it's possible that current limitation may affect the integration of
 ### on worker nodes
 
     curl -fsL https://get.k3s.io | K3S_URL=https://<controller-node>:6443 K3S_TOKEN=<node_token> sh -s - --node-name <worker-node>
+
+## HA controllers (embedded etcd)
+
+By default, this stack provisions one controller (`k3sc1`) and workers.
+
+To provision additional controller LXCs (`k3sc2`, `k3sc3`) for an HA-ready topology:
+
+```bash
+export TF_VAR_k3s_ha_enabled=true
+terraform plan
+terraform apply
+```
+
+Notes:
+- This Terraform stack provisions LXCs only.
+- K3s HA still requires server bootstrap/join with embedded etcd.
+
+Recommended bootstrap order:
+1. Start `k3sc1` as first server with `--cluster-init` (and optional `--tls-san <stable-api-endpoint>`).
+2. Join `k3sc2` and `k3sc3` as server nodes (`K3S_URL=https://<stable-api-endpoint>:6443`).
+3. Point workers/agents to the same stable API endpoint.
+4. Validate quorum and health before maintenance operations.
