@@ -29,7 +29,7 @@ resource "proxmox_lxc" "k3s-controller1" {
   unprivileged = false
   onboot       = true
   pool         = "k3s"
-  clone        = "101"
+  clone        = var.controller1_clone_template
 
   searchdomain = var.searchdomain
   nameserver   = var.nameserver
@@ -50,7 +50,6 @@ resource "proxmox_lxc" "k3s-controller1" {
   }
 }
 
-
 resource "proxmox_lxc" "k3s-controller2" {
   count       = var.k3s_ha_enabled ? 1 : 0
   hostname    = "k3sc2"
@@ -63,7 +62,7 @@ resource "proxmox_lxc" "k3s-controller2" {
   unprivileged = false
   onboot       = true
   pool         = "k3s"
-  clone        = "template3"
+  clone        = var.controller_ha_clone_template
 
   searchdomain = var.searchdomain
   nameserver   = var.nameserver
@@ -96,7 +95,7 @@ resource "proxmox_lxc" "k3s-controller3" {
   unprivileged = false
   onboot       = true
   pool         = "k3s"
-  clone        = "template3"
+  clone        = var.controller_ha_clone_template
 
   searchdomain = var.searchdomain
   nameserver   = var.nameserver
@@ -116,18 +115,19 @@ resource "proxmox_lxc" "k3s-controller3" {
     size    = "20G"
   }
 }
+
 resource "proxmox_lxc" "k3s-worker5" {
   hostname    = "k3sw5"
-  cores       = 4
-  memory      = "8192"
+  cores       = var.worker_cores
+  memory      = var.worker_memory_mb
   swap        = "512"
-  password    = "123456" # Note: Consider managing secrets more securely
+  password    = "123456"
   target_node = "proxmox"
 
   unprivileged = false
   onboot       = true
   pool         = "k3s"
-  clone        = "101" # Assuming template ID 101 is correct
+  clone        = var.worker_clone_template
 
   searchdomain = var.searchdomain
   nameserver   = var.nameserver
@@ -150,8 +150,8 @@ resource "proxmox_lxc" "k3s-worker5" {
 
 resource "proxmox_lxc" "k3s-worker1" {
   hostname    = "k3sw1"
-  cores       = 4
-  memory      = "8192"
+  cores       = var.worker_cores
+  memory      = var.worker_memory_mb
   swap        = "512"
   password    = "123456"
   target_node = "proxmox"
@@ -159,7 +159,7 @@ resource "proxmox_lxc" "k3s-worker1" {
   unprivileged = false
   onboot       = true
   pool         = "k3s"
-  clone        = "101"
+  clone        = var.worker_clone_template
 
   searchdomain = var.searchdomain
   nameserver   = var.nameserver
@@ -182,8 +182,8 @@ resource "proxmox_lxc" "k3s-worker1" {
 
 resource "proxmox_lxc" "k3s-worker2" {
   hostname    = "k3sw2"
-  cores       = 4
-  memory      = "8192"
+  cores       = var.worker_cores
+  memory      = var.worker_memory_mb
   swap        = "512"
   password    = "123456"
   target_node = "proxmox"
@@ -191,7 +191,7 @@ resource "proxmox_lxc" "k3s-worker2" {
   unprivileged = false
   onboot       = true
   pool         = "k3s"
-  clone        = "101"
+  clone        = var.worker_clone_template
 
   searchdomain = var.searchdomain
   nameserver   = var.nameserver
@@ -214,8 +214,8 @@ resource "proxmox_lxc" "k3s-worker2" {
 
 resource "proxmox_lxc" "k3s-worker3" {
   hostname    = "k3sw3"
-  cores       = 4
-  memory      = "8192"
+  cores       = var.worker_cores
+  memory      = var.worker_memory_mb
   swap        = "512"
   password    = "123456"
   target_node = "proxmox"
@@ -223,7 +223,7 @@ resource "proxmox_lxc" "k3s-worker3" {
   unprivileged = false
   onboot       = true
   pool         = "k3s"
-  clone        = "101"
+  clone        = var.worker_clone_template
 
   searchdomain = var.searchdomain
   nameserver   = var.nameserver
@@ -246,8 +246,8 @@ resource "proxmox_lxc" "k3s-worker3" {
 
 resource "proxmox_lxc" "k3s-worker4" {
   hostname    = "k3sw4"
-  cores       = 4
-  memory      = "8192"
+  cores       = var.worker_cores
+  memory      = var.worker_memory_mb
   swap        = "512"
   password    = "123456"
   target_node = "proxmox"
@@ -255,7 +255,7 @@ resource "proxmox_lxc" "k3s-worker4" {
   unprivileged = false
   onboot       = true
   pool         = "k3s"
-  clone        = "101"
+  clone        = var.worker_clone_template
 
   searchdomain = var.searchdomain
   nameserver   = var.nameserver
@@ -266,6 +266,40 @@ resource "proxmox_lxc" "k3s-worker4" {
     firewall = true
     ip       = "192.168.1.205/24"
     hwaddr   = "7A:00:00:00:04:05"
+    gw       = var.gw
+    ip6      = "auto"
+    # tag    =1
+  }
+  rootfs {
+    storage = "local-lvm"
+    size    = "20G"
+  }
+}
+
+resource "proxmox_lxc" "k3s-worker-canary" {
+  count       = var.k3s_canary_worker_enabled ? 1 : 0
+  vmid        = var.canary_worker_vmid
+  hostname    = var.canary_worker_hostname
+  cores       = var.worker_cores
+  memory      = var.worker_memory_mb
+  swap        = "512"
+  password    = "123456"
+  target_node = "proxmox"
+
+  unprivileged = false
+  onboot       = true
+  pool         = "k3s"
+  clone        = var.worker_clone_template
+
+  searchdomain = var.searchdomain
+  nameserver   = var.nameserver
+  network {
+    name     = "eth0"
+    bridge   = "vmbr0"
+    type     = "veth"
+    firewall = true
+    ip       = var.canary_worker_ip_cidr
+    hwaddr   = var.canary_worker_hwaddr
     gw       = var.gw
     ip6      = "auto"
     # tag    =1

@@ -125,3 +125,29 @@ Recommended bootstrap order:
 2. Join `k3sc2` and `k3sc3` as server nodes (`K3S_URL=https://<stable-api-endpoint>:6443`).
 3. Point workers/agents to the same stable API endpoint.
 4. Validate quorum and health before maintenance operations.
+
+## Major template upgrade with worker canary
+
+The stack now supports a temporary canary worker for major OS/template transitions.
+
+Key Terraform knobs:
+
+```bash
+# build Rocky 10 template first with ansible:
+# ansible-playbook proxmox/playbook-build-rockylinux10-lxc-template.yaml -e k3s_template_vmid=120
+export TF_VAR_worker_clone_template=120
+export TF_VAR_k3s_canary_worker_enabled=true
+export TF_VAR_canary_worker_hostname=k3sw6
+export TF_VAR_canary_worker_ip_cidr=192.168.1.210/24
+export TF_VAR_canary_worker_hwaddr=7A:00:00:00:04:10
+export TF_VAR_canary_worker_vmid=111
+```
+
+Workflow summary:
+1. Create canary worker from new template.
+2. Join canary to cluster and validate.
+3. Drain one old worker onto canary.
+4. Recreate old workers one-by-one on the new template.
+5. Remove canary after full rollout.
+
+Detailed steps: see `MAJOR_UPGRADE_CANARY.md`.
