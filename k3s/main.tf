@@ -63,7 +63,7 @@ resource "proxmox_lxc" "k3s-controller2" {
   unprivileged = false
   onboot       = true
   pool         = "k3s"
-  clone        = "101"
+  clone        = "template3"
 
   searchdomain = var.searchdomain
   nameserver   = var.nameserver
@@ -96,7 +96,7 @@ resource "proxmox_lxc" "k3s-controller3" {
   unprivileged = false
   onboot       = true
   pool         = "k3s"
-  clone        = "101"
+  clone        = "template3"
 
   searchdomain = var.searchdomain
   nameserver   = var.nameserver
