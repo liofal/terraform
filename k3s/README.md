@@ -88,8 +88,6 @@ pveum user permissions terraform@pve
 
     cat /etc/rancher/k3s/k3s.yaml
 
-  
-
 ### on worker nodes
 
     curl -fsL https://get.k3s.io | K3S_URL=https://<controller-node>:6443 K3S_TOKEN=<node_token> sh -s - --node-name <worker-node>
@@ -106,9 +104,21 @@ terraform plan
 terraform apply
 ```
 
+Controller sizing can be tuned independently from workers:
+
+```bash
+export TF_VAR_controller_cores=2
+export TF_VAR_controller_memory_mb=4096
+```
+
+API endpoint options:
+- Preferred: `k3s-api.<domain>` -> single VIP/LB IP.
+- Temporary lab mode: DNS round-robin (`A` records to all controller IPs) with low TTL.
+
 Notes:
 - This Terraform stack provisions LXCs only.
 - K3s HA still requires server bootstrap/join with embedded etcd.
+- Use the runbook `HA_MIGRATION.md` for migration and validation.
 
 Recommended bootstrap order:
 1. Start `k3sc1` as first server with `--cluster-init` (and optional `--tls-san <stable-api-endpoint>`).
