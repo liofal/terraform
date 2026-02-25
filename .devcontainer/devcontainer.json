@@ -5,7 +5,12 @@
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/base:jammy",
 	"features": {
-		"ghcr.io/robbert229/devcontainer-features/opentofu:1": {}
+		// "ghcr.io/robbert229/devcontainer-features/opentofu:1": {},
+		"ghcr.io/devcontainers/features/aws-cli:1": {},
+		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
+		"ghcr.io/dhoeric/features/google-cloud-cli:1": {},
+		"ghcr.io/devcontainers-extra/features/node-asdf:0": {},
+		"ghcr.io/devcontainers/features/terraform:1": {},
 	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
@@ -18,10 +23,33 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"hashicorp.terraform"
+				"hashicorp.terraform",
+				"Anthropic.claude-code",
+				"openai.chatgpt",
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode",
+				"mhutchie.git-graph",
+				"kilocode.kilo-code"
 			]
 		}
 	},
+	
+	"mounts": [
+		"source=${localEnv:HOME}/.kube,target=/home/vscode/.kube,type=bind",
+		"source=${localEnv:HOME}/.codex,target=/home/vscode/.codex,type=bind",
+		"source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind",
+		"source=${localEnv:HOME}/.ssh,target=/Users/lionelfalise/.ssh/,type=bind,ro",
+		"source=${localEnv:HOME}/.ssh/keys,target=/Users/lionelfalise/.ssh/keys/,type=bind,ro",
+		"source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind"
+	],
+
+	"containerEnv": {
+		"AWS_PROFILE": "SpeosInnovationProd",
+		"CLAUDE_CODE_USE_BEDROCK": "1",
+		"KUBECONFIG": "/home/vscode/.kube/k3s.config",
+		"AWS_REGION": "eu-west-1",
+		"CLAUDE_CODE_BEDROCK_MODEL_HAIKU": "anthropic.claude-haiku-4-5-20251001-v1:0"
+	}
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
 }
