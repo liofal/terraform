@@ -108,7 +108,21 @@ Controller sizing can be tuned independently from workers:
 
 ```bash
 export TF_VAR_controller_cores=2
-export TF_VAR_controller_memory_mb=4096
+export TF_VAR_controller_memory_mb=2048
+```
+
+Apply controller taints before reducing memory so app workloads are scheduled onto workers:
+
+```bash
+ansible-playbook k3s/playbook-enforce-k3s-controller-noschedule-taint.yaml
+```
+
+Pin controller VMIDs to keep controller replacement repeatable and preserve Ansible `pct_id` mapping:
+
+```bash
+export TF_VAR_controller1_vmid=103
+export TF_VAR_controller2_vmid=108
+export TF_VAR_controller3_vmid=107
 ```
 
 API endpoint options:

@@ -56,6 +56,24 @@ variable "controller_ha_clone_template" {
   default     = "template3"
 }
 
+variable "controller1_vmid" {
+  description = "Explicit VMID for k3sc1."
+  type        = number
+  default     = 103
+}
+
+variable "controller2_vmid" {
+  description = "Explicit VMID for k3sc2 (used when k3s_ha_enabled=true)."
+  type        = number
+  default     = 108
+}
+
+variable "controller3_vmid" {
+  description = "Explicit VMID for k3sc3 (used when k3s_ha_enabled=true)."
+  type        = number
+  default     = 107
+}
+
 variable "worker_clone_template" {
   description = "Template/VMID used when cloning k3s worker nodes."
   type        = string

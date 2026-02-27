@@ -20,6 +20,7 @@ provider "proxmox" {
 
 resource "proxmox_lxc" "k3s-controller1" {
   hostname    = "k3sc1"
+  vmid        = var.controller1_vmid
   cores       = var.controller_cores
   memory      = var.controller_memory_mb
   swap        = "512"
@@ -53,6 +54,7 @@ resource "proxmox_lxc" "k3s-controller1" {
 resource "proxmox_lxc" "k3s-controller2" {
   count       = var.k3s_ha_enabled ? 1 : 0
   hostname    = "k3sc2"
+  vmid        = var.controller2_vmid
   cores       = var.controller_cores
   memory      = var.controller_memory_mb
   swap        = "512"
@@ -86,6 +88,7 @@ resource "proxmox_lxc" "k3s-controller2" {
 resource "proxmox_lxc" "k3s-controller3" {
   count       = var.k3s_ha_enabled ? 1 : 0
   hostname    = "k3sc3"
+  vmid        = var.controller3_vmid
   cores       = var.controller_cores
   memory      = var.controller_memory_mb
   swap        = "512"
